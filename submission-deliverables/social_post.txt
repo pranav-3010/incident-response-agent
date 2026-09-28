@@ -1,0 +1,20 @@
+Stateless AI is dangerous in production outages. At 3 AM, generic LLMs give textbook advice or suggest blind reboots that corrupt data.
+
+We built an autonomous SRE Incident Copilot with persistent memory to solve institutional amnesia.
+
+Using Hindsight agent memory by Vectorize, we leveraged retain, recall, and reflect.
+
+Key takeaways:
+- Act 1 (Cold Start): 0% match. Honestly falls back to first-principles triage.
+- Act 2 (retain): SRE stores verified fix and anti-pattern: "DO NOT scale replicas (locks DB)."
+- Act 3 (recall): Weeks later, same crash hits. 96% match, exact runbook cited, bad reboot blocked.
+- reflect(): Discovered auth deploys were silently causing downstream Redis connection leaks.
+
+#AIAgents #AI #Hindsight #AgentMemory #AIMemory #LLM
+
+================================================================================
+INSTRUCTIONS FOR POSTING (DO NOT INCLUDE IN MAIN POST TEXT):
+1. In your main LinkedIn post, paste the text above and include your GitHub repo link: [Your GitHub Repo URL]
+2. FIRST COMMENT on your post: "Read the full technical breakdown and code snippets here: [Your Published Article URL]"
+3. SECOND COMMENT on your post: "Explore Hindsight open-source agent memory here: https://github.com/vectorize-io/hindsight"
+================================================================================

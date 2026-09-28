@@ -51,8 +51,8 @@ Unlike simple RAG (Retrieval-Augmented Generation) which treats memory as a dumb
 
 ### 1. `recall()` — Multi-Strategy Retrieval with Match Strength
 When an alert hits, the agent queries Hindsight using parallel vector embeddings, BM25 keyword matching, and service taxonomy. It yields a calibrated **Match Strength**:
-* 🟢 **High Match ($\ge 80\%$)**: Cites historical incident ID, verified runbook steps, and exact engineer who resolved it.
-* 🟡 **Moderate Match ($50\% - 79\%$)**: Surfaces partial architectural overlap across shared services.
+* 🟢 **High Match ($\ge 75\%$)**: Cites historical incident ID, verified runbook steps, and exact engineer who resolved it.
+* 🟡 **Moderate Match ($50\% - 74\%$)**: Surfaces partial architectural overlap across shared services.
 * ⚪ **Cold Start ($< 50\%$)**: Transparently identifies novel issues and engages first-principles triage without hallucinating.
 
 ### 2. `retain()` — Episodic Post-Mortem Retention
@@ -69,10 +69,10 @@ Hindsight's reflection engine connects the dots across disparate incidents over 
 The agent features a built-in 3-act progression to clearly demonstrate the memory learning curve:
 
 | Act | Stage | Scenario | Agent Behavior |
-| :---: | :--- | :--- | :--- |
+| :--- | :--- | :--- | :--- |
 | **Act 1** | **Cold Start** | Novel Kubernetes `OOMKilled` (Exit Code 137) in `billing-worker`. | **0% Match**. Honestly admits zero historical precedent; provides safe, first-principles SRE triage. |
 | **Act 2** | **Learning Loop** | Engineer fixes issue with cursor chunking (`BATCH_CHUNK_SIZE=500`) and logs post-mortem. | Calls Hindsight **`retain()`**. Closes the knowledge gap. Memory bank updates in real time. |
-| **Act 3** | **The Payoff** | Weeks later, similar batch memory spike occurs in `billing-worker`. | **96% High Match!** Instantly surfaces proven runbook, cites INC-108, and warns: ⚠️ *DO NOT scale pod replicas (causes DB lock starvation).* |
+| **Act 3** | **The Payoff** | Weeks later, similar batch memory spike occurs in `billing-worker`. | **97% High Match!** Instantly surfaces proven runbook, cites INC-108, and warns: ⚠️ *DO NOT scale pod replicas (causes DB lock starvation).* |
 
 ---
 

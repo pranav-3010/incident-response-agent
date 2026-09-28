@@ -217,7 +217,7 @@ tab_demo, tab_triage, tab_reflect, tab_bank = st.tabs([
 
 
 # ==============================================================================
-# TAB 1: 3-Act Demo Progression (The Core Hackathon Story)
+# TAB 1: 3-Act Demo Progression (The Core Learning Story)
 # ==============================================================================
 with tab_demo:
     st.header("The Learning Arc: From Cold Start to Institutional Memory")
