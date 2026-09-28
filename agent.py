@@ -188,6 +188,8 @@ class IncidentResponseAgent:
         content = json.loads(chat_completion.choices[0].message.content)
 
         top_match_info = None
+        citations = []
+        hindsight_evidence = None
         if tier != "COLD_START" and matched_candidate:
             matched_inc = matched_candidate["incident"]
             top_match_info = {

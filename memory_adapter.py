@@ -337,15 +337,57 @@ class HindsightMemoryClient:
                     break
 
             if not matched_inc:
+                # 1. Check if ID matches an OpenSRE trajectory
+                cand_id = metadata.get("id")
+                if not cand_id:
+                    import re
+                    m = re.search(r"Incident ID:\s*([^\n]+)", text)
+                    if m:
+                        cand_id = m.group(1).strip()
+                
+                if cand_id:
+                    try:
+                        from opensre_loader import get_opensre_incident_by_id
+                        matched_inc = get_opensre_incident_by_id(cand_id)
+                    except Exception:
+                        matched_inc = None
+
+            if not matched_inc:
+                # 2. Parse rich structured fields stored by _format_incident_for_retention
+                import re
+
+                def _extract_sec(hdr: str, ends: list) -> str:
+                    ptn = rf"{re.escape(hdr)}:\s*(.*?)(?=" + "|".join([rf"{re.escape(h)}:" for h in ends] + ["$"]) + ")"
+                    m = re.search(ptn, text, re.DOTALL | re.IGNORECASE)
+                    return m.group(1).strip() if m else ""
+
+                p_title = _extract_sec("Title", ["Service", "Severity", "Error Signature"])
+                p_root_cause = _extract_sec("Root Cause", ["Runbook Steps", "Anti-Patterns", "Resolved By"])
+                p_runbook = _extract_sec("Runbook Steps", ["Anti-Patterns (Dangerous Actions to AVOID)", "Anti-Patterns", "Resolved By"])
+                p_anti = _extract_sec("Anti-Patterns (Dangerous Actions to AVOID)", ["Resolved By", "Deployment Context"]) or _extract_sec("Anti-Patterns", ["Resolved By"])
+                p_resolved = _extract_sec("Resolved By", ["Deployment Context"])
+                p_service = _extract_sec("Service", ["Severity", "Error Signature"])
+
+                rb_steps = [
+                    l.lstrip("- *0123456789.").strip()
+                    for l in p_runbook.split("\n")
+                    if l.strip() and not l.strip().startswith("#")
+                ]
+                anti_steps = [
+                    l.lstrip("- *0123456789.").strip()
+                    for l in p_anti.split("\n")
+                    if l.strip() and not l.strip().startswith("#")
+                ]
+
                 first_line = text.split("\n")[0] if text else "Historical Outage"
                 matched_inc = {
                     "id": metadata.get("id", "RECALLED"),
-                    "title": first_line[:80],
-                    "service": service or metadata.get("service", "system"),
-                    "root_cause": text,
-                    "runbook_steps": ["Review historical remediation steps in Hindsight memory"],
-                    "anti_patterns": [],
-                    "resolved_by": "SRE Team",
+                    "title": p_title or first_line[:80],
+                    "service": p_service or service or metadata.get("service", "system"),
+                    "root_cause": p_root_cause or text,
+                    "runbook_steps": rb_steps if rb_steps else ["Verify system metrics and apply standard recovery runbook."],
+                    "anti_patterns": anti_steps,
+                    "resolved_by": p_resolved or "SRE Team",
                 }
 
             items.append({
