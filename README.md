@@ -96,7 +96,7 @@ The seed memory bank is loaded with **realistic synthetic SRE incident trajector
 
 ### 1. Clone & Set Up Virtual Environment
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/pranav-3010/incident-response-agent.git
 cd incident-response-agent
 python3 -m venv venv
 source venv/bin/activate
@@ -129,9 +129,11 @@ incident-response-agent/
 ├── README.md                 # Complete system documentation & architecture
 ├── requirements.txt          # Python dependencies
 ├── .env.example              # Environment variables template
-├── config.py                 # Configuration loader with auto-fallback detection
+├── config.py                 # Configuration loader with Streamlit Cloud & local support
 ├── seed_incidents.py         # Realistic SRE dataset with deliberate holdout
-├── memory_adapter.py       # Hindsight API wrapper (retain, recall, reflect)
+├── opensre_loader.py         # OpenSRE trajectory benchmark loader
+├── opensre_trajectories.jsonl# 197 real-world incident post-mortems (GitHub, Cloudflare, Slack)
+├── memory_adapter.py         # Hindsight API wrapper (retain, recall, reflect)
 ├── agent.py                  # Core SRE diagnostic reasoning engine
 ├── run_demo.py               # Headless CLI demo runner & automated test harness
 └── app.py                    # Streamlit interactive showcase dashboard
