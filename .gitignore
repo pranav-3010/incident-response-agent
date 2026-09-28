@@ -4,13 +4,20 @@ venv/
 ENV/
 env/
 
-# Python bytecode
+# Python bytecode & temporary state
 __pycache__/
 *.py[cod]
 *$py.class
+retained_memories.json
 
 # macOS system files
 .DS_Store
 
 # Streamlit secrets (Do not commit secrets!)
 .streamlit/secrets.toml
+
+# Submission deliverables & drafts (stored in Desktop/submission-deliverables)
+article.md
+submission-deliverables/
+social_post.txt
+video_script.md
