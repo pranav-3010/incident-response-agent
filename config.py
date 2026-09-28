@@ -15,9 +15,6 @@ import certifi
 os.environ.setdefault("SSL_CERT_FILE", certifi.where())
 os.environ.setdefault("REQUESTS_CA_BUNDLE", certifi.where())
 
-# Enable nested event loops for Streamlit async compatibility
-import nest_asyncio
-nest_asyncio.apply()
 
 # Find and load the .env file in the project root
 BASE_DIR = Path(__file__).resolve().parent
