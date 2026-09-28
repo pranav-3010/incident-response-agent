@@ -7,6 +7,15 @@ and biomimetic reflection on systemic architectural risks.
 """
 
 import streamlit as st
+
+# Page Configuration MUST be the first Streamlit command executed
+st.set_page_config(
+    page_title="Incident Response Agent | Powered by Hindsight",
+    page_icon="🛡️",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
+
 import time
 from typing import Dict, Any
 from datetime import datetime, timezone
@@ -18,16 +27,6 @@ from opensre_loader import (
     load_opensre_incidents,
     get_opensre_incident_by_id,
     convert_opensre_to_hindsight_format,
-)
-
-# ==============================================================================
-# Page Configuration & Styling
-# ==============================================================================
-st.set_page_config(
-    page_title="Incident Response Agent | Powered by Hindsight",
-    page_icon="🛡️",
-    layout="wide",
-    initial_sidebar_state="expanded",
 )
 
 # Custom Styling for SRE / Terminal aesthetic
