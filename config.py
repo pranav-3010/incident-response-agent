@@ -24,6 +24,16 @@ BASE_DIR = Path(__file__).resolve().parent
 ENV_PATH = BASE_DIR / ".env"
 load_dotenv(dotenv_path=ENV_PATH)
 
+# Check Streamlit secrets if running in Streamlit Cloud
+try:
+    import streamlit as st
+    if hasattr(st, "secrets"):
+        for key in ["HINDSIGHT_API_KEY", "HINDSIGHT_BASE_URL", "HINDSIGHT_BANK_ID", "GROQ_API_KEY", "GROQ_MODEL", "FORCE_MOCK_MODE"]:
+            if key in st.secrets and not os.getenv(key):
+                os.environ[key] = str(st.secrets[key])
+except Exception:
+    pass
+
 # ==============================================================================
 # Hindsight Memory Configuration
 # ==============================================================================
