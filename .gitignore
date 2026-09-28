@@ -1,0 +1,16 @@
+# Environments & Secrets
+.env
+venv/
+ENV/
+env/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# macOS system files
+.DS_Store
+
+# Streamlit secrets (Do not commit secrets!)
+.streamlit/secrets.toml
