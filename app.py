@@ -590,9 +590,9 @@ with tab_reflect:
     )
     st.divider()
 
-    # If live cloud reflection text is available, render the full report in beautiful markdown!
+    # If live cloud / engine reflection text is available, render the full report in beautiful markdown!
     if refl.get("live_cloud_text"):
-        st.markdown("### 🌐 Live Hindsight Cloud Synthesis Report")
+        st.markdown("### 🌐 Hindsight Biomimetic Reflection Report")
         st.markdown(refl["live_cloud_text"])
         st.divider()
 

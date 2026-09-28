@@ -401,7 +401,47 @@ class IncidentResponseAgent:
         Triggers Hindsight's biomimetic reflection engine to uncover
         temporal patterns, recurring deployment bottlenecks, and systemic risks.
         """
-        return self.memory.reflect(topic=topic)
+        refl = self.memory.reflect(topic=topic)
+
+        # If live cloud reflection text is missing (e.g. 402 credits exhausted or offline),
+        # use Groq LLM to perform associative biomimetic reflection over all stored memories in the bank
+        if not refl.get("live_cloud_text") and self.groq_client and not IS_MOCK_GROQ:
+            try:
+                incidents = self.memory.get_all_retained()
+                inc_summaries = []
+                for inc in incidents:
+                    inc_summaries.append(
+                        f"- [{inc.get('id', 'INC')}] ({inc.get('service', 'system')}): {inc.get('title', 'Outage')}. "
+                        f"Root Cause: {str(inc.get('root_cause', 'N/A'))[:140]}. "
+                        f"Remediation: {', '.join(inc.get('runbook_steps', [])[:2])}"
+                    )
+
+                reflection_prompt = (
+                    "You are the Hindsight Biomimetic Reflection Engine for Ops Hindsight. "
+                    "Your purpose is to perform high-order associative reflection across all past incident memories in the memory bank "
+                    "to uncover systemic patterns, recurring architectural vulnerabilities, and cross-service failure dynamics.\n\n"
+                    f"Topic of Inquiry: {topic}\n\n"
+                    f"Stored Incident Memories ({len(incidents)} total in bank):\n"
+                    + "\n".join(inc_summaries)
+                    + "\n\nSynthesize a rigorous, professional SRE architectural reflection report in Markdown with sections:\n"
+                    "## 1. Executive Reflection & Systemic Posture\n"
+                    "## 2. Chronic Architectural Hotspots & Recurring Failure Modes\n"
+                    "## 3. Cross-Service Cascading Dependencies & Anti-Patterns\n"
+                    "## 4. Strategic Engineering Hardening Roadmap (P0 / P1 Priority Actions)\n"
+                )
+
+                chat_comp = self.groq_client.chat.completions.create(
+                    model=GROQ_MODEL,
+                    messages=[{"role": "user", "content": reflection_prompt}],
+                    temperature=0.3,
+                )
+                refl["live_cloud_text"] = chat_comp.choices[0].message.content
+                refl["mode"] = f"Hindsight Biomimetic Engine ({GROQ_MODEL})"
+                logger.info(f"Synthesized reflection report via Groq ({GROQ_MODEL}) for topic: '{topic}'")
+            except Exception as e:
+                logger.warning(f"Groq reflection synthesis fallback failed: {e}")
+
+        return refl
 
 
 if __name__ == "__main__":
